@@ -105,19 +105,37 @@ namespace GildedRoseTests
             Check.That(trial.stock.All(qualityIsNotNegative)).IsTrue();
         }
 
+        Func<int, int> increase = value => value + 1;
+
+        [Fact]
+        public void Aged_Brie_actually_increases_in_Quality_the_older_it_gets()
+        {
+            //given
+            int quality = 10;
+            var agedBrie = new Item { Name = "Aged Brie", SellIn = FarFromExpiring, Quality = quality };
+            var stock = new List<Item> { agedBrie };
+
+            //when
+            GildedRose app = new GildedRose(stock);
+            app.nextday();
+
+            //then
+            Check.That(agedBrie.Quality).Equals(increase(quality));
+        }
+
         /*
-      TODO write tests for the below requirements
-      
-      
-      Aged_Brie_actually_increases_in_Quality_the_older_it_gets
-      The_Quality_of_an_item_is_never_more_than_50
-      Sulfuras_never has to be sold or decreases in Quality
-      "Backstage passes", like aged brie, increases in Quality as its SellIn value approaches;
-      Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but
-      Quality drops to 0 after the concert
-      "Conjured" items degrade in Quality twice as fast as normal items
-      an item can never have its Quality increase above 50, however "Sulfuras" is a legendary item and as such its Quality is 80 and it never alters.
-         */
+            TODO write tests for the below requirements
+
+
+            
+            The_Quality_of_an_item_is_never_more_than_50
+            Sulfuras_never has to be sold or decreases in Quality
+            "Backstage passes", like aged brie, increases in Quality as its SellIn value approaches;
+            Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but
+            Quality drops to 0 after the concert
+            "Conjured" items degrade in Quality twice as fast as normal items
+            an item can never have its Quality increase above 50, however "Sulfuras" is a legendary item and as such its Quality is 80 and it never alters.
+               */
 
 
     }
