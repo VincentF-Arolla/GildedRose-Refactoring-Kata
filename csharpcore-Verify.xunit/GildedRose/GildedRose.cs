@@ -3,13 +3,15 @@ using System.Collections.Generic;
 
 namespace GildedRoseKata
 {
-
     static class GildedRoseTestExtensions
     {
-        public static void strengthen(this Item item) => item.Quality++;
-        public static void weaken(this Item item) => item.Quality--;
         public static bool expired(this Item item) => item.SellIn < 0;
+        public static void strengthen(this Item item) => item.Quality++;
+        public static bool strengthenable(this Item item) => item.Quality < 50;
+        public static void strengthenIfPossible(this Item item) { if (strengthenable(item)) strengthen(item); }
+        public static void weaken(this Item item) => item.Quality--;
         public static bool weakenable(this Item item) => item.Quality > 0;
+        public static void weakenIfPossible(this Item item) { if (weakenable(item)) weaken(item); }
     }
 
     public class GildedRose
@@ -29,7 +31,6 @@ namespace GildedRoseKata
             name => IsAgedBrie(name)
             || IsBackstagePasses(name);
 
-        static readonly int maxValue = 50;
 
         public void UpdateQuality()
         {
@@ -51,7 +52,7 @@ namespace GildedRoseKata
                    
                     if (IsBackstagePasses(name)) //particular strenghtenable
                     {
-                        if (item.Quality < maxValue)
+                        if (item.strengthenable())
                         {
                             item.strengthen();
 
@@ -66,7 +67,7 @@ namespace GildedRoseKata
                         }
                     } else //nominal strenghtenable
                     {
-                        if (item.Quality < maxValue)
+                        if (item.strengthenable())
                         {
                             item.strengthen();
 
@@ -79,12 +80,10 @@ namespace GildedRoseKata
                 }
 
                 //nominal weakenable
-                if (item.weakenable())
-                    item.weaken();
+                item.weakenIfPossible();
 
                 if (item.expired())
-                    if (item.weakenable())
-                        item.weaken();
+                    item.weakenIfPossible();
 
             }
         }
