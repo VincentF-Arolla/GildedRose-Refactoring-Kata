@@ -254,6 +254,27 @@ works only with 'Backstage passes to a TAFKAL80ETC concert'
             } while (backstage.SellIn > 5);
         }
         
+        [Fact]
+        public void Backstage_passes_increases_in_Quality__by_3_when_there_are_5_days_or_less()
+        {
+            //given
+            var backstage = new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = 5, Quality = 20 };
+            var stock = new List<Item> { backstage };
+
+            //when
+            GildedRose app = new GildedRose(stock);
+            Check.That(backstage.SellIn).IsEqualTo(5);
+
+            //then
+            do
+            {
+                Check.That(backstage.SellIn).IsStrictlyLessThan(5 + 1);
+                int previousQuality = backstage.Quality;
+                app.nextday();
+                Check.That(backstage.Quality).Equals(increaseBy3(previousQuality));
+            } while (backstage.SellIn > 0);
+        }
+        
         /*
             TODO write tests for the below requirements
 
