@@ -3,9 +3,22 @@ using System.Collections.Generic;
 using GildedRoseKata;
 using System.Linq;
 using NFluent;
+using System;
 
 namespace GildedRoseTests
 {
+
+    static class GildedRoseExtensions
+    {
+        public static void nextday(this GildedRose app)
+            => app.UpdateQuality();
+        public static IEnumerable<int> quality(this List<Item> items)
+            => items.Select(item => item.Quality).ToList();
+        public static IEnumerable<int> sellin(this List<Item> items)
+            => items.Select(item => item.SellIn).ToList();
+    }
+
+
     public class GildedRoseTest
     {
         [Fact]
@@ -17,37 +30,57 @@ namespace GildedRoseTests
             Assert.Equal("foo", Items[0].Name);
         }
 
-        
+        readonly int FarFromExpiring = 1000;
+        Func<int, int> lower = value => value - 1;
+
         [Fact]
         public void Next_day_both_SellIn_and_Quality_lower_for_every_item()
         {
-            var foo = new Item { Name = "foo", SellIn = 1000, Quality = 10 };
-            var bar = new Item { Name = "bar", SellIn = 1000, Quality = 20 };
+            //given
+            var foo = new Item { Name = "foo", SellIn = FarFromExpiring, Quality = 10 };
+            var bar = new Item { Name = "bar", SellIn = FarFromExpiring, Quality = 20 };
             var stock = new List<Item> { foo, bar };
+
+            //when
+            var expected_sellin_nextday = stock.sellin().Select(lower);
+            var expected_quality_nextday = stock.quality().Select(lower);
+            Check.That(expected_quality_nextday).IsEquivalentTo(new[] { 9, 19 });
             GildedRose app = new GildedRose(stock);
+            app.nextday();
 
-            var nextday = () => app.UpdateQuality();
-            var lower = (int value) => value--;
-            var quality = (List<Item> s) => s.Select(item => item.Quality);
-            var sellin = (List<Item> s) => s.Select(item => item.SellIn);
+            //then
+            Check.That(stock.sellin()).Equals(expected_sellin_nextday);
+            Check.That(stock.quality()).Equals(expected_quality_nextday);
+        }
 
-            var quality_before = quality(stock);
-            var sellin_before = sellin(stock);
-            var expected_quality_after = quality_before.Select(value => lower(value));
-            var expected_sellin_after = sellin_before.Select(value => lower(value));
 
-            nextday();
-            Check.That(quality(stock)).Equals(expected_quality_after);
-            Check.That(sellin(stock)).Equals(expected_sellin_after);
+        readonly int DateHasPassed = 0;
+        Func<int, int> degradesTwiceAsFast = value => value - 2;
+
+        [Fact]
+        public void Once_the_sell_by_date_has_passed__Quality_degrades_twice_as_fast()
+        {
+            //given
+            var foo = new Item { Name = "foo", SellIn = DateHasPassed, Quality = 10 };
+            var bar = new Item { Name = "bar", SellIn = DateHasPassed, Quality = 20 };
+            var stock = new List<Item> { foo, bar };
+
+            //when
+            var expected_quality_nextday = stock.quality().Select(degradesTwiceAsFast);
+            GildedRose app = new GildedRose(stock);
+            app.nextday();
+
+            //then
+            Check.That(stock.quality()).Equals(expected_quality_nextday);
         }
 
         /*
       TODO write tests for the below requirements
-      Once the sell by date has passed, Quality degrades twice as fast
-      The Quality of an item is never negative
-      "Aged Brie" actually increases in Quality the older it gets
-      The Quality of an item is never more than 50
-      "Sulfuras", being a legendary item, never has to be sold or decreases in Quality
+      
+      The_Quality_of_an_item_is_never_negative
+      Aged_Brie_actually_increases_in_Quality_the_older_it_gets
+      The_Quality_of_an_item_is_never_more_than_50
+      Sulfuras_never has to be sold or decreases in Quality
       "Backstage passes", like aged brie, increases in Quality as its SellIn value approaches;
       Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but
       Quality drops to 0 after the concert
