@@ -193,12 +193,72 @@ namespace GildedRoseTests
             );
         }
 
+        [Fact (Skip = @"
+detected implementation error: 'Backstage passes' is not enough,
+works only with 'Backstage passes to a TAFKAL80ETC concert'
+")]
+        public void Backstage_passes_increases_in_Quality__simple_case()
+        {
+            //given
+            var backstage = new Item { Name = "Backstage passes", SellIn = FarFromExpiring, Quality = 10 };
+            var stock = new List<Item> { backstage };
+
+            //when
+            GildedRose app = new GildedRose(stock);
+            app.nextday();
+
+            //then
+            var newQuality = Check.That(backstage.Quality);
+            newQuality.Not.Equals(9);//nominal
+            newQuality.Equals(11);//particularity
+        }
+
+        [Fact]
+        public void Backstage_passes_increases_in_Quality__simple_case__hotfix()
+        {
+            //given
+            var backstage = new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = FarFromExpiring, Quality = 10 };
+            var stock = new List<Item> { backstage };
+
+            //when
+            GildedRose app = new GildedRose(stock);
+            app.nextday();
+
+            //then
+            var newQuality = Check.That(backstage.Quality);
+            newQuality.Not.Equals(9);//nominal
+            newQuality.Equals(11);//particularity
+        }
+
+        Func<int, int> increaseBy2 = value => value + 2;
+        Func<int, int> increaseBy3 = value => value + 3;
+
+        [Fact]
+        public void Backstage_passes_increases_in_Quality__by_2_when_there_are_10_days_or_less_and_more_than_5()
+        {
+            //given
+            var backstage = new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = 10, Quality = 20 };
+            var stock = new List<Item> { backstage };
+
+            //when
+            GildedRose app = new GildedRose(stock);
+            Check.That(backstage.SellIn).IsEqualTo(10);
+
+            //then
+            do
+            {
+                Check.That(backstage.SellIn).IsStrictlyLessThan(10 + 1);
+                int previousQuality = backstage.Quality;
+                app.nextday();
+                Check.That(backstage.Quality).Equals(increaseBy2(previousQuality));
+            } while (backstage.SellIn > 5);
+        }
+        
         /*
             TODO write tests for the below requirements
 
             
-            "Backstage passes", like aged brie, increases in Quality as its SellIn value approaches;
-                Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but
+            Backstage_passes_increases_in_Quality__by_2 when there are 10 days or less and by 3 when there are 5 days or less but
                 Quality drops to 0 after the concert
             "Conjured" items degrade in Quality twice as fast as normal items
             an item can never have its Quality increase above 50, however "Sulfuras" is a legendary item and as such its Quality is 80 and it never alters.
