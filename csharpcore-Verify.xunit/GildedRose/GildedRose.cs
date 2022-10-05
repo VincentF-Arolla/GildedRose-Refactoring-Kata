@@ -48,8 +48,6 @@ namespace GildedRoseKata
                         if (item.SellIn < 0)
                             item.Quality = 0;
                     }
-                    if (item.SellIn < 0)
-                        item.Quality = 0;
                     break;
                 }
 
