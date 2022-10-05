@@ -315,14 +315,53 @@ they just degrade normally.
             newQuality.Equals(degradeTwiceAsFast(quality));//particularity
         }
 
+        [Fact]
+        public void An_item_can_never_have_its_Quality_increase_above_50()
+        {
+            //given
+            var strengthenable = new Item { Name = "Aged Brie", SellIn = FarFromExpiring, Quality = maxQuality };
+            var stock = new List<Item> { strengthenable };
 
-        /*
-            TODO write tests for the below requirements
+            //when
+            GildedRose app = new GildedRose(stock);
+            app.nextday();
 
-            
-            an item can never have its Quality increase above 50, however "Sulfuras" is a legendary item and as such its Quality is 80 and it never alters.
-               */
+            //then
+            var strengthenableQuality = Check.That(strengthenable.Quality);
+            strengthenableQuality.Not.Equals(increase(maxQuality));//not nominal
+            strengthenableQuality.Equals(maxQuality);//but particular
+        }
+        
+        static Func<Item, bool> isSulfuras = item => item.Name.StartsWith("Sulfuras, Hand of Ragnaros");
 
+        static readonly int sulfurasEverQuality = 80;
+
+        //TODO correct implementation
+        //observe sulfurasEverQuality
+        //TODO suspecting Sulfuras just like Backstage not to be well tested
+        //static Func<Item, bool> isSulfuras = item => item.Name.StartsWith("Sulfuras");
+        [Fact
+(Skip = @"
+detected implementation error: Sulfuras DO alters, just like normal items
+whereas it shouldn't 'it never alters'
+")
+        ]
+        public void An_item_can_never_have_its_Quality_increase_above_50__except_sulfuras()
+        {
+            //given
+            var sulfuras = new Item { Name = "Sulfuras", SellIn = FarFromExpiring, Quality = sulfurasEverQuality };
+            var stock = new List<Item> { sulfuras };
+
+            //when
+            GildedRose app = new GildedRose(stock);
+            app.nextday();
+
+            //then
+            var sulfurasQuality = Check.That(sulfuras.Quality);
+            sulfurasQuality.Not.IsEqualTo(increase(sulfurasEverQuality));//not nominal
+            sulfurasQuality.IsEqualTo(sulfurasEverQuality);//but particular
+        }
+        
 
     }
 }
