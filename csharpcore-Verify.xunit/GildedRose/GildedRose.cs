@@ -44,9 +44,9 @@ namespace GildedRoseKata
 
                 if (item.willStrengthen())
                 {
-                  
 
-                   
+
+
                     if (item.IsBackstagePasses()) //particular strenghtenable
                     {
                         if (item.strengthenable())
@@ -62,17 +62,11 @@ namespace GildedRoseKata
                             if (item.SellIn < 0)
                                 item.Quality = 0;
                         }
-                    } else //nominal strenghtenable
+                    }
+                    else //nominal strenghtenable
                     {
-                        if (item.SellIn < 0)
-                            if (item.strengthenable())
-                                item.strengthen();
-
-                        if (item.strengthenable())
-                        {
-                            item.strengthen();
-
-                        }
+                        item.strengthenIfPossible();
+                        if (item.expired()) item.strengthenIfPossible();
                     }
 
                     break;
