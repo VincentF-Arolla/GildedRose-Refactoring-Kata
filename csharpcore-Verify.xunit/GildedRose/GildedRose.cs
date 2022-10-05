@@ -50,18 +50,13 @@ namespace GildedRoseKata
                                 item.Quality = item.Quality + 1;
                         }
                     }
-                }
-                else
-                {
-                    if (item.Quality > 0)
-                        item.Quality = item.Quality - 1;
-                    if (item.SellIn < 0)
-                    {
-                        if (item.Quality > 0)
-                            item.Quality = item.Quality - 1;
-                    }
+                    break;
                 }
 
+                if (item.Quality > 0)
+                    item.Quality = item.Quality - 1;
+                if (item.SellIn < 0 && item.Quality > 0)
+                        item.Quality = item.Quality - 1;
 
             }
         }
