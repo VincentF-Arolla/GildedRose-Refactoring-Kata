@@ -24,11 +24,12 @@ namespace GildedRoseKata
 
                 if (name == "Aged Brie")
                 {
-                    if (item.Quality < 50)
+                    if (item.Quality < 50) {
                         item.Quality = item.Quality + 1;
 
-                    if (item.SellIn < 0 && item.Quality < 50)
-                        item.Quality = item.Quality + 1;
+                        if (item.SellIn < 0)
+                            item.Quality = item.Quality + 1;
+                    }
                     break;
                 }
                 
@@ -43,6 +44,9 @@ namespace GildedRoseKata
 
                         if (item.SellIn < 5)
                             item.Quality = item.Quality + 1;
+
+                        if (item.SellIn < 0)
+                            item.Quality = 0;
                     }
                     if (item.SellIn < 0)
                         item.Quality = 0;
@@ -50,10 +54,12 @@ namespace GildedRoseKata
                 }
 
                 if (item.Quality > 0)
+                {
                     item.Quality = item.Quality - 1;
 
-                if (item.SellIn < 0 && item.Quality > 0)
-                    item.Quality = item.Quality - 1;
+                    if (item.SellIn < 0)
+                        item.Quality = item.Quality - 1;
+                }
 
             }
         }
