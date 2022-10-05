@@ -12,14 +12,14 @@ namespace GildedRoseKata
             this.stock = TestFactory.getTestItems();
         }
 
-        public void runDays(int days) => TestFactory.run(stock, days);
+        public void runDays(int days, Action iterationTest = null) => TestFactory.run(stock, days, iterationTest);
     }
 
     public class TestFactory
     {
         public static TestTrial getTestTrial() => new TestTrial(getTestItems());
 
-        public static List<Item> getTestItems() => new List<Item>{
+        public static List<Item> getTestItems() => new List<Item> {
             new Item {Name = "+5 Dexterity Vest", SellIn = 10, Quality = 20},
             new Item {Name = "Aged Brie", SellIn = 2, Quality = 0},
             new Item {Name = "Elixir of the Mongoose", SellIn = 5, Quality = 7},
@@ -48,7 +48,7 @@ namespace GildedRoseKata
         };
 
 
-        public static void run(List<Item> Items, int days)
+        public static void run(List<Item> Items, int days, Action iterationTest = null)
         {
             var app = new GildedRose(Items);
 
@@ -59,6 +59,7 @@ namespace GildedRoseKata
                 for (var j = 0; j < Items.Count; j++)
                 {
                     System.Console.WriteLine(Items[j].Name + ", " + Items[j].SellIn + ", " + Items[j].Quality);
+                    if (iterationTest != null) iterationTest();
                 }
                 Console.WriteLine("");
                 app.UpdateQuality();

@@ -66,16 +66,17 @@ namespace GildedRoseTests
             var stock = new List<Item> { foo, bar };
 
             //when
+            var not_expected_quality_nextday = stock.quality().Select(lower);
             var expected_quality_nextday = stock.quality().Select(degradesTwiceAsFast);
             GildedRose app = new GildedRose(stock);
             app.nextday();
 
             //then
+            Check.That(stock.quality()).Not.Equals(not_expected_quality_nextday);
             Check.That(stock.quality()).Equals(expected_quality_nextday);
         }
 
         Func<Item, bool> qualityIsNotNegative = item => item.Quality >= 0;
-        Func<bool, bool> not = condition => !condition;
 
         [Fact]
         public void The_Quality_of_an_item_is_never_negative__simple_case()
@@ -89,7 +90,7 @@ namespace GildedRoseTests
             app.nextday();
 
             //then
-            Check.That(stock.All(qualityIsNotNegative)).IsTrue();
+            Check.That(qualityIsNotNegative(foo)).IsTrue();
         }
 
         [Fact]
@@ -120,19 +121,55 @@ namespace GildedRoseTests
             app.nextday();
 
             //then
-            Check.That(agedBrie.Quality).Equals(increase(quality));
+            var newQuality = Check.That(agedBrie.Quality);
+            newQuality.Not.Equals(lower(quality));//nominal
+            newQuality.Equals(increase(quality));//particularity
         }
+
+        readonly int maxQuality = 50;
+
+        [Fact]
+        public void The_Quality_of_an_item_is_never_more_than_50__simple_case()
+        {
+            //given
+            var itemThatCanIncreaseQuality = new Item { Name = "Aged Brie", SellIn = FarFromExpiring, Quality = maxQuality };
+            var stock = new List<Item> { itemThatCanIncreaseQuality };
+
+            //when
+            GildedRose app = new GildedRose(stock);
+            app.nextday();
+
+            //then
+            var newQuality = Check.That(itemThatCanIncreaseQuality.Quality);
+            newQuality.Not.Equals(51);//nominal
+            newQuality.Equals(50);//particularity
+        }
+
+        [Fact]
+        public void The_Quality_of_an_item_is_never_more_than_50__except_for_sulfuras__complex_case()
+        {
+            //given
+            var trial = TestFactory.getTestTrial();
+
+            //when
+            trial.runDays(30,
+                //then
+                () => Check.That(trial.stock.All(
+                    item => item.Quality <= maxQuality
+                    || item.Name.StartsWith("Sulfuras") //exception
+                )).IsTrue()
+            );
+        }
+
+
 
         /*
             TODO write tests for the below requirements
 
-
-            
-            The_Quality_of_an_item_is_never_more_than_50
             Sulfuras_never has to be sold or decreases in Quality
             "Backstage passes", like aged brie, increases in Quality as its SellIn value approaches;
-            Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but
-            Quality drops to 0 after the concert
+                Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but
+                Quality drops to 0 after the concert
             "Conjured" items degrade in Quality twice as fast as normal items
             an item can never have its Quality increase above 50, however "Sulfuras" is a legendary item and as such its Quality is 80 and it never alters.
                */
