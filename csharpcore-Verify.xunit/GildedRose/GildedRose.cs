@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace GildedRoseKata
 {
@@ -29,9 +28,6 @@ namespace GildedRoseKata
         {
             this.Items = Items;
         }
-
-
-
 
         public void UpdateQuality()
         {
