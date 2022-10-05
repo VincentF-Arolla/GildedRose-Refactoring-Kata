@@ -275,12 +275,24 @@ works only with 'Backstage passes to a TAFKAL80ETC concert'
             } while (backstage.SellIn > 0);
         }
         
+        [Fact]
+        public void Backstage_Quality_drops_to_0_after_the_concert()
+        {
+            //given
+            var backstage = new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = 0, Quality = 20 };
+            var stock = new List<Item> { backstage };
+
+            //when
+            GildedRose app = new GildedRose(stock);
+            app.nextday();
+
+            //then
+            Check.That(backstage.Quality).IsZero();
+        }
+        
         /*
             TODO write tests for the below requirements
 
-            
-            Backstage_passes_increases_in_Quality__by_2 when there are 10 days or less and by 3 when there are 5 days or less but
-                Quality drops to 0 after the concert
             "Conjured" items degrade in Quality twice as fast as normal items
             an item can never have its Quality increase above 50, however "Sulfuras" is a legendary item and as such its Quality is 80 and it never alters.
                */
