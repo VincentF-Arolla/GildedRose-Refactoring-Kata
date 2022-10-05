@@ -3,6 +3,15 @@ using System.Collections.Generic;
 
 namespace GildedRoseKata
 {
+
+    static class GildedRoseTestExtensions
+    {
+        public static void strengthen(this Item item) => item.Quality++;
+        public static void weaken(this Item item) => item.Quality--;
+        public static bool expired(this Item item) => item.SellIn < 0;
+        public static bool weakenable(this Item item) => item.Quality > 0;
+    }
+
     public class GildedRose
     {
         IList<Item> Items;
@@ -44,13 +53,13 @@ namespace GildedRoseKata
                     {
                         if (item.Quality < maxValue)
                         {
-                            item.Quality++;
+                            item.strengthen();
 
                             if (item.SellIn < 10)
-                                item.Quality++;
+                                item.strengthen();
 
                             if (item.SellIn < 5)
-                                item.Quality++;
+                                item.strengthen();
 
                             if (item.SellIn < 0)
                                 item.Quality = 0;
@@ -59,10 +68,10 @@ namespace GildedRoseKata
                     {
                         if (item.Quality < maxValue)
                         {
-                            item.Quality++;
+                            item.strengthen();
 
                             if (item.SellIn < 0)
-                                item.Quality++;
+                                item.strengthen();
                         }
                     }
 
@@ -70,12 +79,12 @@ namespace GildedRoseKata
                 }
 
                 //nominal weakenable
-                if (item.Quality > 0)
+                if (item.weakenable())
                 {
-                    item.Quality--;
+                    item.weaken();
 
-                    if (item.SellIn < 0)
-                        item.Quality--;
+                    if (item.expired())
+                        item.weaken();
                 }
 
             }

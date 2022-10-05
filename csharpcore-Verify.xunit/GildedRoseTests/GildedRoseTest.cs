@@ -8,7 +8,7 @@ using System;
 namespace GildedRoseTests
 {
 
-    static class GildedRoseExtensions
+    static class GildedRoseTestExtensions
     {
         public static void nextday(this GildedRose app)
             => app.UpdateQuality();
@@ -329,7 +329,21 @@ they just degrade normally.
             sulfurasQuality.Not.IsEqualTo(increase(sulfurasEverQuality));//not nominal
             sulfurasQuality.IsEqualTo(sulfurasEverQuality);//but particular
         }
-        
+
+        [Fact]
+        public void The_Quality_of_an_item_is_never_negative__even_if_1_and_expiring()
+        {
+            //given
+            var foo = new Item { Name = "foo", SellIn = 0, Quality = 1 };
+            var stock = new List<Item> { foo };
+
+            //when
+            GildedRose app = new GildedRose(stock);
+            app.nextday();
+
+            //then
+            Check.That(qualityIsNotNegative(foo)).IsTrue();
+        }
 
     }
 }
