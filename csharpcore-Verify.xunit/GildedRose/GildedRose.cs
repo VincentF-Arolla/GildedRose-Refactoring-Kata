@@ -5,6 +5,10 @@ namespace GildedRoseKata
 {
     static class GildedRoseTestExtensions
     {
+        public static bool IsAgedBrie(this Item item) => item.Name == "Aged Brie";
+        public static bool IsBackstagePasses(this Item item) => item.Name.StartsWith("Backstage passes");
+        public static bool willStrengthen(this Item item) => IsAgedBrie(item) || IsBackstagePasses(item);
+        public static void nextday(this Item item) => item.SellIn--;
         public static bool expired(this Item item) => item.SellIn < 0;
         public static void strengthen(this Item item) => item.Quality++;
         public static bool strengthenable(this Item item) => item.Quality < 50;
@@ -23,13 +27,6 @@ namespace GildedRoseKata
         }
 
 
-        static Func<string, bool> IsAgedBrie = name => name == "Aged Brie";
-
-        static Func<string, bool> IsBackstagePasses = name => name.StartsWith("Backstage passes");
-
-        static Func<string, bool> IsStrengthenable =
-            name => IsAgedBrie(name)
-            || IsBackstagePasses(name);
 
 
         public void UpdateQuality()
@@ -39,18 +36,18 @@ namespace GildedRoseKata
                 var item = Items[i];
                 var name = item.Name;
 
-                item.SellIn = item.SellIn - 1;
+                item.nextday();
 
                 //particular
                 if (name.StartsWith("Sulfuras"))
                     break;
 
-                if (IsStrengthenable(name))
+                if (item.willStrengthen())
                 {
                   
 
                    
-                    if (IsBackstagePasses(name)) //particular strenghtenable
+                    if (item.IsBackstagePasses()) //particular strenghtenable
                     {
                         if (item.strengthenable())
                         {
@@ -67,12 +64,14 @@ namespace GildedRoseKata
                         }
                     } else //nominal strenghtenable
                     {
+                        if (item.SellIn < 0)
+                            if (item.strengthenable())
+                                item.strengthen();
+
                         if (item.strengthenable())
                         {
                             item.strengthen();
 
-                            if (item.SellIn < 0)
-                                item.strengthen();
                         }
                     }
 
@@ -81,10 +80,7 @@ namespace GildedRoseKata
 
                 //nominal weakenable
                 item.weakenIfPossible();
-
-                if (item.expired())
-                    item.weakenIfPossible();
-
+                if (item.expired()) item.weakenIfPossible();
             }
         }
     }
