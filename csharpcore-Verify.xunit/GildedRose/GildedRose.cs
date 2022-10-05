@@ -18,7 +18,7 @@ namespace GildedRoseKata
                 {
                     if (Items[i].Quality > 0)
                     {
-                        if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
+                        if (!Items[i].Name.StartsWith("Sulfuras"))
                         {
                             Items[i].Quality = Items[i].Quality - 1;
                         }
@@ -51,7 +51,7 @@ namespace GildedRoseKata
                     }
                 }
 
-                if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
+                if (!Items[i].Name.StartsWith("Sulfuras"))
                 {
                     Items[i].SellIn = Items[i].SellIn - 1;
                 }
@@ -64,7 +64,7 @@ namespace GildedRoseKata
                         {
                             if (Items[i].Quality > 0)
                             {
-                                if (Items[i].Name != "Sulfuras, Hand of Ragnaros")
+                                if (!Items[i].Name.StartsWith("Sulfuras"))
                                 {
                                     Items[i].Quality = Items[i].Quality - 1;
                                 }
