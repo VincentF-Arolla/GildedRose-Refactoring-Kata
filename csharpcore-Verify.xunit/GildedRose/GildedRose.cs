@@ -7,6 +7,7 @@ namespace GildedRoseKata
         public static bool IsAgedBrie(this Item item) => item.Name == "Aged Brie";
         public static bool IsBackstagePasses(this Item item) => item.Name.StartsWith("Backstage passes");
         public static bool IsSulfuras(this Item item) => item.Name.StartsWith("Sulfuras");
+        public static bool IsConjured(this Item item) => item.Name.StartsWith("Conjured");
         public static bool willStrengthen(this Item item) => IsAgedBrie(item) || IsBackstagePasses(item);
         public static void nextday(this Item item) => item.SellIn--;
         public static bool expired(this Item item) => item.SellIn < 0;
@@ -64,6 +65,7 @@ namespace GildedRoseKata
 
                 //nominal weakenable
                 item.weakenIfPossible();
+                if (item.IsConjured()) item.weakenIfPossible();
 
                 if (item.expired()) item.weakenIfPossible();
             }

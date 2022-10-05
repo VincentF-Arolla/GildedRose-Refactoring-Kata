@@ -272,11 +272,7 @@ namespace GildedRoseTests
 
         static Func<int, int> degradeTwiceAsFast = value => lower(lower(value));
 
-        //TODO correct implementation
-        [Fact (Skip = @"
-detected implementation error: Conjured items do not degrade twice as fast
-they just degrade normally.
-")]
+        [Fact]
         public void Conjured_items_degrade_in_Quality_twice_as_fast_as_normal_items()
         {
             //given
