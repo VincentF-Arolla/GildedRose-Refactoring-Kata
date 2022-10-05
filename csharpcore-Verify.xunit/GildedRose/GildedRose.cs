@@ -80,12 +80,11 @@ namespace GildedRoseKata
 
                 //nominal weakenable
                 if (item.weakenable())
-                {
                     item.weaken();
 
-                    if (item.expired())
+                if (item.expired())
+                    if (item.weakenable())
                         item.weaken();
-                }
 
             }
         }
