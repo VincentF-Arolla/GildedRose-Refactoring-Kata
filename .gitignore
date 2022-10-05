@@ -5,3 +5,4 @@ obj
 vendor
 .idea
 *.iml
+/csharpcore-Verify.xunit/GildedRose.v3.ncrunchsolution
