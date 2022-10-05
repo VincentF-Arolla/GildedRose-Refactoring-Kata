@@ -20,12 +20,8 @@ namespace GildedRoseKata
                 if (name != "Aged Brie" && !name.StartsWith("Backstage passes"))
                 {
                     if (item.Quality > 0)
-                    {
                         if (!name.StartsWith("Sulfuras"))
-                        {
                             item.Quality = item.Quality - 1;
-                        }
-                    }
                 }
                 else
                 {
@@ -36,28 +32,18 @@ namespace GildedRoseKata
                         if (name.StartsWith("Backstage passes"))
                         {
                             if (item.SellIn < 11)
-                            {
                                 if (item.Quality < 50)
-                                {
                                     item.Quality = item.Quality + 1;
-                                }
-                            }
 
                             if (item.SellIn < 6)
-                            {
                                 if (item.Quality < 50)
-                                {
                                     item.Quality = item.Quality + 1;
-                                }
-                            }
                         }
                     }
                 }
 
                 if (!name.StartsWith("Sulfuras"))
-                {
                     item.SellIn = item.SellIn - 1;
-                }
 
                 if (item.SellIn < 0)
                 {
@@ -66,24 +52,16 @@ namespace GildedRoseKata
                         if (!name.StartsWith("Backstage passes"))
                         {
                             if (item.Quality > 0)
-                            {
                                 if (!name.StartsWith("Sulfuras"))
-                                {
                                     item.Quality = item.Quality - 1;
-                                }
-                            }
                         }
                         else
-                        {
                             item.Quality = item.Quality - item.Quality;
-                        }
                     }
                     else
                     {
                         if (item.Quality < 50)
-                        {
                             item.Quality = item.Quality + 1;
-                        }
                     }
                 }
             }
