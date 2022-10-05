@@ -22,6 +22,8 @@ namespace GildedRoseKata
                     break;
 
 
+                item.SellIn = item.SellIn - 1;
+
 
                 if (name == "Aged Brie" || name.StartsWith("Backstage passes"))
                 {
@@ -31,10 +33,10 @@ namespace GildedRoseKata
 
                         if (name.StartsWith("Backstage passes"))
                         {
-                            if (item.SellIn < 11)
+                            if (item.SellIn < 10)
                                 item.Quality = item.Quality + 1;
 
-                            if (item.SellIn < 6)
+                            if (item.SellIn < 5)
                                 item.Quality = item.Quality + 1;
                         }
                     }
@@ -45,7 +47,6 @@ namespace GildedRoseKata
 
 
 
-                item.SellIn = item.SellIn - 1;
 
                 if (item.SellIn < 0)
                 {
