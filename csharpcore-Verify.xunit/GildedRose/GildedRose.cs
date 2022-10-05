@@ -17,11 +17,13 @@ namespace GildedRoseKata
                 var item = Items[i];
                 var name = item.Name;
 
+                if (name.StartsWith("Sulfuras"))
+                    break;
+
                 if (name != "Aged Brie" && !name.StartsWith("Backstage passes"))
                 {
                     if (item.Quality > 0)
-                        if (!name.StartsWith("Sulfuras"))
-                            item.Quality = item.Quality - 1;
+                        item.Quality = item.Quality - 1;
                 }
                 else
                 {
@@ -42,8 +44,7 @@ namespace GildedRoseKata
                     }
                 }
 
-                if (!name.StartsWith("Sulfuras"))
-                    item.SellIn = item.SellIn - 1;
+                item.SellIn = item.SellIn - 1;
 
                 if (item.SellIn < 0)
                 {
@@ -52,8 +53,7 @@ namespace GildedRoseKata
                         if (!name.StartsWith("Backstage passes"))
                         {
                             if (item.Quality > 0)
-                                if (!name.StartsWith("Sulfuras"))
-                                    item.Quality = item.Quality - 1;
+                                item.Quality = item.Quality - 1;
                         }
                         else
                             item.Quality = item.Quality - item.Quality;
