@@ -12,9 +12,9 @@ namespace GildedRoseTests
     {
         public static void nextday(this GildedRose app)
             => app.UpdateQuality();
-        public static IEnumerable<int> quality(this List<Item> items)
+        public static List<int> quality(this List<Item> items)
             => items.Select(item => item.Quality).ToList();
-        public static IEnumerable<int> sellin(this List<Item> items)
+        public static List<int> sellin(this List<Item> items)
             => items.Select(item => item.SellIn).ToList();
     }
 
@@ -74,10 +74,41 @@ namespace GildedRoseTests
             Check.That(stock.quality()).Equals(expected_quality_nextday);
         }
 
+        Func<Item, bool> qualityIsNotNegative = item => item.Quality >= 0;
+        Func<bool, bool> not = condition => !condition;
+
+        [Fact]
+        public void The_Quality_of_an_item_is_never_negative__simple_case()
+        {
+            //given
+            var foo = new Item { Name = "foo", SellIn = FarFromExpiring, Quality = 0 };
+            var stock = new List<Item> { foo };
+
+            //when
+            GildedRose app = new GildedRose(stock);
+            app.nextday();
+
+            //then
+            Check.That(stock.All(qualityIsNotNegative)).IsTrue();
+        }
+
+        [Fact]
+        public void The_Quality_of_an_item_is_never_negative__complex_case()
+        {
+            //given
+            var trial = TestFactory.getTestTrial();
+
+            //when
+            trial.runDays(30);
+
+            //then
+            Check.That(trial.stock.All(qualityIsNotNegative)).IsTrue();
+        }
+
         /*
       TODO write tests for the below requirements
       
-      The_Quality_of_an_item_is_never_negative
+      
       Aged_Brie_actually_increases_in_Quality_the_older_it_gets
       The_Quality_of_an_item_is_never_more_than_50
       Sulfuras_never has to be sold or decreases in Quality
