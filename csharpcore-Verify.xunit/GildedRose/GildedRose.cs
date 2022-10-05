@@ -15,11 +15,13 @@ namespace GildedRoseKata
             for (var i = 0; i < Items.Count; i++)
             {
                 var item = Items[i];
-                if (item.Name != "Aged Brie" && !item.Name.StartsWith("Backstage passes"))
+                var name = item.Name;
+
+                if (name != "Aged Brie" && !name.StartsWith("Backstage passes"))
                 {
                     if (item.Quality > 0)
                     {
-                        if (!item.Name.StartsWith("Sulfuras"))
+                        if (!name.StartsWith("Sulfuras"))
                         {
                             item.Quality = item.Quality - 1;
                         }
@@ -31,7 +33,7 @@ namespace GildedRoseKata
                     {
                         item.Quality = item.Quality + 1;
 
-                        if (item.Name.StartsWith("Backstage passes"))
+                        if (name.StartsWith("Backstage passes"))
                         {
                             if (item.SellIn < 11)
                             {
@@ -52,20 +54,20 @@ namespace GildedRoseKata
                     }
                 }
 
-                if (!item.Name.StartsWith("Sulfuras"))
+                if (!name.StartsWith("Sulfuras"))
                 {
                     item.SellIn = item.SellIn - 1;
                 }
 
                 if (item.SellIn < 0)
                 {
-                    if (item.Name != "Aged Brie")
+                    if (name != "Aged Brie")
                     {
-                        if (!item.Name.StartsWith("Backstage passes"))
+                        if (!name.StartsWith("Backstage passes"))
                         {
                             if (item.Quality > 0)
                             {
-                                if (!item.Name.StartsWith("Sulfuras"))
+                                if (!name.StartsWith("Sulfuras"))
                                 {
                                     item.Quality = item.Quality - 1;
                                 }
