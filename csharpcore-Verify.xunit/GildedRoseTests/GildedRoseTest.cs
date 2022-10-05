@@ -217,7 +217,7 @@ namespace GildedRoseTests
         public void Backstage_passes_increases_in_Quality__by_2_when_there_are_10_days_or_less_and_more_than_5()
         {
             //given
-            var backstage = new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = 10, Quality = 20 };
+            var backstage = new Item { Name = "Backstage passes lambda", SellIn = 10, Quality = 20 };
             var stock = new List<Item> { backstage };
 
             //when
@@ -238,7 +238,7 @@ namespace GildedRoseTests
         public void Backstage_passes_increases_in_Quality__by_3_when_there_are_5_days_or_less()
         {
             //given
-            var backstage = new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = 5, Quality = 20 };
+            var backstage = new Item { Name = "Backstage passes lambda", SellIn = 5, Quality = 20 };
             var stock = new List<Item> { backstage };
 
             //when
@@ -259,7 +259,7 @@ namespace GildedRoseTests
         public void Backstage_Quality_drops_to_0_after_the_concert()
         {
             //given
-            var backstage = new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = 0, Quality = 20 };
+            var backstage = new Item { Name = "Backstage passes lambda", SellIn = 0, Quality = 20 };
             var stock = new List<Item> { backstage };
 
             //when
@@ -310,15 +310,11 @@ they just degrade normally.
             strengthenableQuality.Not.Equals(increase(maxQuality));//not nominal
             strengthenableQuality.Equals(maxQuality);//but particular
         }
-        
-        static Func<Item, bool> isSulfuras = item => item.Name.StartsWith("Sulfuras, Hand of Ragnaros");
 
         static readonly int sulfurasEverQuality = 80;
 
         //TODO correct implementation
         //observe sulfurasEverQuality
-        //TODO suspecting Sulfuras just like Backstage not to be well tested
-        //static Func<Item, bool> isSulfuras = item => item.Name.StartsWith("Sulfuras");
         [Fact
 (Skip = @"
 detected implementation error: Sulfuras DO alters, just like normal items
