@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace GildedRoseKata
 {
@@ -10,6 +11,17 @@ namespace GildedRoseKata
             this.Items = Items;
         }
 
+
+        static Func<string, bool> IsAgedBrie = name => name == "Aged Brie";
+
+        static Func<string, bool> IsBackstagePasses = name => name.StartsWith("Backstage passes");
+
+        static Func<string, bool> IsStrengthenable =
+            name => IsAgedBrie(name)
+            || IsBackstagePasses(name);
+
+        static readonly int maxValue = 50;
+
         public void UpdateQuality()
         {
             for (var i = 0; i < Items.Count; i++)
@@ -19,44 +31,51 @@ namespace GildedRoseKata
 
                 item.SellIn = item.SellIn - 1;
 
+                //particular
                 if (name.StartsWith("Sulfuras"))
                     break;
 
-                if (name == "Aged Brie")
+                if (IsStrengthenable(name))
                 {
-                    if (item.Quality < 50) {
-                        item.Quality = item.Quality + 1;
+                  
 
-                        if (item.SellIn < 0)
-                            item.Quality = item.Quality + 1;
-                    }
-                    break;
-                }
-                
-                if (name.StartsWith("Backstage passes"))
-                {
-                    if (item.Quality < 50)
+                   
+                    if (IsBackstagePasses(name)) //particular strenghtenable
                     {
-                        item.Quality = item.Quality + 1;
+                        if (item.Quality < maxValue)
+                        {
+                            item.Quality++;
 
-                        if (item.SellIn < 10)
-                            item.Quality = item.Quality + 1;
+                            if (item.SellIn < 10)
+                                item.Quality++;
 
-                        if (item.SellIn < 5)
-                            item.Quality = item.Quality + 1;
+                            if (item.SellIn < 5)
+                                item.Quality++;
 
-                        if (item.SellIn < 0)
-                            item.Quality = 0;
+                            if (item.SellIn < 0)
+                                item.Quality = 0;
+                        }
+                    } else //nominal strenghtenable
+                    {
+                        if (item.Quality < maxValue)
+                        {
+                            item.Quality++;
+
+                            if (item.SellIn < 0)
+                                item.Quality++;
+                        }
                     }
+
                     break;
                 }
 
+                //nominal weakenable
                 if (item.Quality > 0)
                 {
-                    item.Quality = item.Quality - 1;
+                    item.Quality--;
 
                     if (item.SellIn < 0)
-                        item.Quality = item.Quality - 1;
+                        item.Quality--;
                 }
 
             }
