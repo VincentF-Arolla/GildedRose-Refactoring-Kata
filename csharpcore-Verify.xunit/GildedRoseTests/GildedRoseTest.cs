@@ -162,11 +162,41 @@ namespace GildedRoseTests
         }
 
 
+        [Fact]
+        public void Sulfuras_never_has_to_be_sold_or_decreases_in_Quality()
+        {
+            //given
+            var trial = TestFactory.getTestTrial();
+            var getSulfuras = () => trial.stock.Where(item => item.Name.StartsWith("Sulfuras"));
+            var getSulfurasCount = () => getSulfuras().Count();
+            var initialSulfurasCount = getSulfurasCount();
+            Check.That(initialSulfurasCount).IsStrictlyPositive();
+            Func<Dictionary<Item, int>> getSulfurasQuality = () => new Dictionary<Item, int>(
+                getSulfuras().Select(item => new KeyValuePair<Item, int> (item, item.Quality))
+            );
+            var initialSulfurasQuality = getSulfurasQuality();
+            Func<Dictionary<Item, int>, Dictionary<Item, int>, bool> HaveSameItems =
+                (previousQuality, quality) => new HashSet<Item>(previousQuality.Keys).SetEquals(new HashSet<Item>(quality.Keys));
+            Func<Dictionary<Item, int>, Dictionary<Item, int>, bool> DidntDecrease =
+                (previousQuality, quality) => previousQuality.Keys.All(item => !(quality[item] < previousQuality[item]));
+
+            //when
+            trial.runDays(30,
+                //then
+                () => {
+                    Check.That(getSulfurasCount()).IsEqualTo(initialSulfurasCount);
+                    var sulfurasQuality = getSulfurasQuality();
+
+                    Check.That(HaveSameItems(initialSulfurasQuality, sulfurasQuality)).IsTrue();
+                    Check.That(DidntDecrease(initialSulfurasQuality, sulfurasQuality)).IsTrue();
+                }
+            );
+        }
 
         /*
             TODO write tests for the below requirements
 
-            Sulfuras_never has to be sold or decreases in Quality
+            
             "Backstage passes", like aged brie, increases in Quality as its SellIn value approaches;
                 Quality increases by 2 when there are 10 days or less and by 3 when there are 5 days or less but
                 Quality drops to 0 after the concert
