@@ -18,7 +18,6 @@ namespace GildedRoseKata
                 var name = item.Name;
 
 
-
                 if (name.StartsWith("Sulfuras"))
                     break;
 
@@ -50,21 +49,19 @@ namespace GildedRoseKata
 
                 if (item.SellIn < 0)
                 {
-                    if (name == "Aged Brie")
-                    {
-                        if (item.Quality < 50)
-                            item.Quality = item.Quality + 1;
-                    }
-                    else
+                    if (name == "Aged Brie" || name.StartsWith("Backstage passes"))
                     {
                         if (name.StartsWith("Backstage passes"))
                             item.Quality = 0;
                         else
                         {
-                            if (item.Quality > 0)
-                                item.Quality = item.Quality - 1;
+                            if (item.Quality < 50)
+                                item.Quality = item.Quality + 1;
                         }
                     }
+                    else
+                        if (item.Quality > 0)
+                            item.Quality = item.Quality - 1;
                 }
             }
         }
