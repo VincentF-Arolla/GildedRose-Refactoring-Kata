@@ -193,32 +193,11 @@ namespace GildedRoseTests
             );
         }
 
-        //TODO correct implementation then delete this test and remove __hotfix from next one
-        [Fact (Skip = @"
-detected implementation error: 'Backstage passes' is not enough,
-works only with 'Backstage passes to a TAFKAL80ETC concert'
-")]
-        public void Backstage_passes_increases_in_Quality__simple_case()
-        {
-            //given
-            var backstage = new Item { Name = "Backstage passes", SellIn = FarFromExpiring, Quality = 10 };
-            var stock = new List<Item> { backstage };
-
-            //when
-            GildedRose app = new GildedRose(stock);
-            app.nextday();
-
-            //then
-            var newQuality = Check.That(backstage.Quality);
-            newQuality.Not.Equals(9);//nominal
-            newQuality.Equals(11);//particularity
-        }
-
         [Fact]
         public void Backstage_passes_increases_in_Quality__simple_case__hotfix()
         {
             //given
-            var backstage = new Item { Name = "Backstage passes to a TAFKAL80ETC concert", SellIn = FarFromExpiring, Quality = 10 };
+            var backstage = new Item { Name = "Backstage passes lambda", SellIn = FarFromExpiring, Quality = 10 };
             var stock = new List<Item> { backstage };
 
             //when
