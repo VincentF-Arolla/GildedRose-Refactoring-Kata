@@ -313,14 +313,7 @@ they just degrade normally.
 
         static readonly int sulfurasEverQuality = 80;
 
-        //TODO correct implementation
-        //observe sulfurasEverQuality
-        [Fact
-(Skip = @"
-detected implementation error: Sulfuras DO alters, just like normal items
-whereas it shouldn't 'it never alters'
-")
-        ]
+        [Fact]
         public void An_item_can_never_have_its_Quality_increase_above_50__except_sulfuras()
         {
             //given
