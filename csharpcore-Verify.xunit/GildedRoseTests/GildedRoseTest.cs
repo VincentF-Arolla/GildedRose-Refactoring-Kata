@@ -30,8 +30,8 @@ namespace GildedRoseTests
             Assert.Equal("foo", Items[0].Name);
         }
 
-        readonly int FarFromExpiring = 1000;
-        Func<int, int> lower = value => value - 1;
+        static readonly int FarFromExpiring = 1000;
+        static Func<int, int> lower = value => value - 1;
 
         [Fact]
         public void Next_day_both_SellIn_and_Quality_lower_for_every_item()
@@ -54,8 +54,8 @@ namespace GildedRoseTests
         }
 
 
-        readonly int DateHasPassed = 0;
-        Func<int, int> degradesTwiceAsFast = value => value - 2;
+        static readonly int DateHasPassed = 0;
+        static Func<int, int> degradesTwiceAsFast = value => value - 2;
 
         [Fact]
         public void Once_the_sell_by_date_has_passed__Quality_degrades_twice_as_fast()
@@ -76,7 +76,7 @@ namespace GildedRoseTests
             Check.That(stock.quality()).Equals(expected_quality_nextday);
         }
 
-        Func<Item, bool> qualityIsNotNegative = item => item.Quality >= 0;
+        static Func<Item, bool> qualityIsNotNegative = item => item.Quality >= 0;
 
         [Fact]
         public void The_Quality_of_an_item_is_never_negative__simple_case()
@@ -106,7 +106,7 @@ namespace GildedRoseTests
             Check.That(trial.stock.All(qualityIsNotNegative)).IsTrue();
         }
 
-        Func<int, int> increase = value => value + 1;
+        static Func<int, int> increase = value => value + 1;
 
         [Fact]
         public void Aged_Brie_actually_increases_in_Quality_the_older_it_gets()
@@ -126,7 +126,7 @@ namespace GildedRoseTests
             newQuality.Equals(increase(quality));//particularity
         }
 
-        readonly int maxQuality = 50;
+        static readonly int maxQuality = 50;
 
         [Fact]
         public void The_Quality_of_an_item_is_never_more_than_50__simple_case()
@@ -193,6 +193,7 @@ namespace GildedRoseTests
             );
         }
 
+        //TODO correct implementation then delete this test and remove __hotfix from next one
         [Fact (Skip = @"
 detected implementation error: 'Backstage passes' is not enough,
 works only with 'Backstage passes to a TAFKAL80ETC concert'
@@ -230,8 +231,8 @@ works only with 'Backstage passes to a TAFKAL80ETC concert'
             newQuality.Equals(11);//particularity
         }
 
-        Func<int, int> increaseBy2 = value => value + 2;
-        Func<int, int> increaseBy3 = value => value + 3;
+        static Func<int, int> increaseBy2 = value => value + 2;
+        static Func<int, int> increaseBy3 = value => value + 3;
 
         [Fact]
         public void Backstage_passes_increases_in_Quality__by_2_when_there_are_10_days_or_less_and_more_than_5()
@@ -289,11 +290,36 @@ works only with 'Backstage passes to a TAFKAL80ETC concert'
             //then
             Check.That(backstage.Quality).IsZero();
         }
-        
+
+        static Func<int, int> degradeTwiceAsFast = value => lower(lower(value));
+
+        //TODO correct implementation
+        [Fact (Skip = @"
+detected implementation error: Conjured items do not degrade twice as fast
+they just degrade normally.
+")]
+        public void Conjured_items_degrade_in_Quality_twice_as_fast_as_normal_items()
+        {
+            //given
+            int quality = 10;
+            var conjured = new Item { Name = "Conjured whatever", SellIn = FarFromExpiring, Quality = quality };
+            var stock = new List<Item> { conjured };
+
+            //when
+            GildedRose app = new GildedRose(stock);
+            app.nextday();
+
+            //then
+            var newQuality = Check.That(conjured.Quality);
+            newQuality.Not.Equals(lower(quality));//nominal
+            newQuality.Equals(degradeTwiceAsFast(quality));//particularity
+        }
+
+
         /*
             TODO write tests for the below requirements
 
-            "Conjured" items degrade in Quality twice as fast as normal items
+            
             an item can never have its Quality increase above 50, however "Sulfuras" is a legendary item and as such its Quality is 80 and it never alters.
                */
 
